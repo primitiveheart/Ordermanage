@@ -34,13 +34,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <script type="text/javascript" src="resources/js/displayOrder.js"></script>
     <script type="text/javascript" src="resources/js/getExtent.js"></script>
     <script type="text/javascript" src="resources/js/getIP.js"></script>
+    <script type="text/javascript" src="resources/js/mapPopup.js"></script>
     
     <!--script end-->
+
 
     <!--style start-->
     <link rel="stylesheet" href="https://openlayers.org/en/v4.5.0/css/ol.css" type="text/css">
     <link rel="stylesheet" href="resources/css/semantic.min.css" type="text/css"/>
+    <link rel="stylesheet" href="resources/css/mapPopup.css" type="text/css"/>
     <link rel="stylesheet" href="resources/three-part/jquery-zclip/jquery.zclip.css">
+    
      <style type="text/css">
      		body > .ui.container{
      			margin-top:0em;
@@ -172,28 +176,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    </button>
 		</div>
 		
-		<!--  
-		<div class="ui large longer modal">
-			<div class="header">
-				专题图
-			</div>
-			<div class="scrolling image content">
-				<div class="description"></div>
-			</div>
-			<div class="actions">
-				<div class="ui positive right labeled icon button">返回</div>
-			</div>
+		<!-- 地图弹出框 -->
+		<div id="map-popup" class="map-popup">
+			<a href="#" id="map-popup-closer" class="map-popup-closer"></a>
+			<div id="map-popup-content" style="width:200px;height:60px"></div>
 		</div>
-		
-		<div class="display_vector">
-			<div class='ui left labeled icon blue button back_vector'>
-				返回
-				<i class="left arrow icon"></i>
-			</div><br/>
-			<div class="ui label">矢量数据</div>
-			<div class="result_display_vector" style="height:90%;width:30%;overflow:scroll"></div>
-		</div>
-		-->
 		
   	</div>
 	
@@ -218,11 +205,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  	var bbox = []; //地图显示的范围
 	    var viewParams = "";
 	    var scope; //选择的范围
+	    
+	    
 	    $(document).ready(function(){		
 	    	var ipAddress = getRootPath();
 	    	
 	    	//隐藏菜单栏中搜索框
 	    	$(".searchItem").hide();
+	    	//隐藏地图弹出框
+	    	$("#map-popup").hide();
 	    	
 	    	var map = getMap();
 	    
@@ -291,7 +282,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							 addInteraction(value, vector, source, map);
 						     draw.on('drawend',function(e){
 				                var geometrty = e.feature.getGeometry();
-				                sum_area = calcArea(value, geometrty)
+				                sum_area = calcArea(value, geometrty);
+				         		//添加提示框
+				         		$("#map-popup").show();
+				         		var mapPopupContent = $("#map-popup-content");
+				         		var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(geometrty.getFirstCoordinate(), 'EPSG:3857', 'EPSG:4326'));
+				         		var popupContent = "<p>您选择区域的形状是: "+shape+"</br>区域的面积是："+sum_area+"平方千米</p>"
+				         		mapPopupContent.html(popupContent);
+				         	 	var mapOverlay = new ol.Overlay({
+									element:document.getElementById('map-popup'),
+									autoPan: true,  
+									autoPanAnimation: {  
+									   duration: 250   //当Popup超出地图边界时，为了Popup全部可见，地图移动的速度. 单位为毫秒（ms）  
+									 }  
+								})
+								mapOverlay.setPosition(geometrty.getFirstCoordinate());
+				         		map.addOverlay(mapOverlay);
 				            },this);
 						}
 					});

@@ -68,7 +68,6 @@ function getSelectShapeExtent(scope, shape){
 		var max_x = ol.proj.transform([extent[2], extent[3]], 'EPSG:3857','EPSG:4326')[0];
 		var max_y = Math.abs(ol.proj.transform([extent[2], extent[3]], 'EPSG:3857','EPSG:4326')[1]);
 		extent = [parseFloat(min_x), parseFloat(min_y), parseFloat(max_x), parseFloat(max_y)];
-		console.log(extent);
 		//extent = [parseFloat(centerX)-5, parseFloat(centerY)-5, parseFloat(centerX) + 5, parseFloat(centerY) + 5];
 	}
 	return extent;

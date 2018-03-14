@@ -57,9 +57,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   		<input type="hidden" data-env="${env}" id="env"> 
 		<div class="ui large longer modal">
 			<div class="header">
-				专题图 <div class="ui button copy">复制链接</div>
-				<a class="sum" href="">汇总值</a>
+				专题图 <div class="ui button copy">复制链接</div> <a class="sum" href="">汇总值链接</a>
 			</div>
+			
 			<div class="scrolling content">
 				<div class="ui header">专题图</div>
 				<div class="ui image" id="image">
@@ -133,9 +133,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		          VIEWPARAMS:viewParams_vector
 		      },  
 		      success:function(result){  
-		    	  var serializer = new XMLSerializer;
-		    	  var serialized = serializer.serializeToString(result);
-		    	  $(".sumDescription").text(serialized);
+		    	  var val = $($(result).children().children().children().children()[1]).text()
+		    	  $(".sumDescription").text(val);
 		      },  
 		      error: function(){  
 		        alert("执行失败");    
