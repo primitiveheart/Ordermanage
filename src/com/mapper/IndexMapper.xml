@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.IndexMapper">
+	<!--<select id="getTemp" parameterType="Integer" resultType="Integer">
+		SELECT attnum FROM pg_attribute limit 1
+	</select>
+	-->
+	<select id="getIndex" resultType="String">
+		SELECT getFldNames('{"schema":"public","tableName":"census_2010","neglectFlds":"id,perimeter,area"}'::json,'f692f114-73aa-11e7-931f-00163e104758','zh')
+	</select>
+	
+	
+	<select id="getSecretKey" resultType="String">
+		SELECT createorder(#{userId}, #{type});
+	</select>
+	
+	<select id="getAllYear" resultType="Integer">
+		SELECT (substring(table_name from '\mcensus_(\d{4})\M'))::int FROM information_schema.tables
+		WHERE table_schema='public'  and  substring(table_name from '\mcensus_\d{4}\M') is not null
+	</select>
+	
+	<select id="showCityStatisticsByCircle" resultType="String">
+		SELECT showCityStatisticsByCircle(#{lon}, #{lat}, #{radius}, #{fld}, #{year}, #{accoutName}, #{accountPwd})
+	</select>
+	
+	<select id="showCityStatisticsByPoly" resultType="String">
+		SELECT showCityStatisticsByPoly(#{lineStr}, #{fld}, #{year}, #{accoutName}, #{accountPwd})
+	</select>
+	
+	<select id="showCityStatisticsByRectangle" resultType="String">
+		SELECT showCityStatisticsByRectangle(#{min_lon}, #{min_lat}, #{max_lon}, #{max_lat}, #{fld}, #{year}, #{accoutName}, #{accountPwd}) 
+	</select>
+	
+	<select id="showCityStatisticsByRegionId" resultType="String">
+		SELECT showCityStatisticsByRegionId(#{regionId}, #{fld}, #{year}, #{accoutName}, #{accountPwd});
+	</select>
+	
+	<select id="getProvince" resultType="String">
+		SELECT getProvince();
+	</select>
+	
+	<select id="getCity" parameterType="Integer" resultType="String">
+		SELECT getCitiesforProvince(#{provinceId})
+	</select>
+	
+	<select id="getCounty" parameterType="Integer" resultType="String">
+		SELECT getCitiesforCities(#{cityId})
+	</select>
+	
+	<select id="getExtentforRegion" parameterType="Integer" resultType="String">
+		SELECT getExtentforRegion(#{regionId})
+	</select>
+	
+	<select id="getFeaturesByRegionId" resultType="String">
+		SELECT getFeaturesByRegionId(#{regionId}, #{fld}, #{year}, #{accoutName}, #{accountPwd})
+	</select>
+	
+	<select id="getAreaforRegion" parameterType="Integer" resultType="String">
+		SELECT getAreaforRegion(#{regionId})
+	</select>
+	
+	<select id="getSLDAppendix_byRectangle" resultType="String">
+		SELECT getSLDAppendix_byRectangle(#{min_lon}, #{min_lat}, #{max_lon}, #{max_lat}, #{fld}, #{year}, #{accoutName}, #{accountPwd})
+	</select>
+	
+	<select id="getSLDAppendix_byPoly" resultType="String">
+		SELECT getSLDAppendix_byPoly(#{lineStr}, #{fld}, #{year}, #{accoutName}, #{accountPwd})
+	</select>
+	
+	<select id="getSLDAppendix_byRadius" resultType="String">
+		SELECT getSLDAppendix_byRadius(#{lon}, #{lat}, #{radius}, #{fld}, #{year}, #{accoutName}, #{accountPwd})
+	</select>
+	
+	<select id="getSLDAppendix_byRegionId" resultType="String">
+		SELECT getSLDAppendix_byRegionId(#{regionId}, #{fld}, #{year}, #{accoutName}, #{accountPwd})
+	</select>
+	
+</mapper>

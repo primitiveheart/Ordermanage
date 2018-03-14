@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.OrderMapper">
+	
+	<resultMap type="order" id="result">
+		<result property="uuid" column="uuid"/>
+		<result property="number" column="num"/>
+		<result property="price" column="price"/>
+		<result property="state" column="state"/>
+		<result property="date" column="date_"/>
+		<result property="scope" column="scope"/>
+		<result property="shape" column="shape"/>
+		<result property="username" column="username"/>
+	</resultMap>
+	
+	<insert id="addOrder" parameterType="order">
+		INSERT INTO orders(uuid, num, price, state, date_, scope, shape, username) 
+		VALUES(#{uuid}, #{number}, #{price}, #{state}, now(), #{scope}, #{shape}, #{username});
+	</insert>
+		
+	<select id="queryOrderByUsername" parameterType="String" resultMap="result">
+		SELECT uuid, num, price, state, date_, scope, shape, username FROM orders WHERE username = #{username} order by date_ desc
+	</select>
+	
+	<select id="totalOrderNum" resultType="Integer">
+		SELECT count(*) FROM orders;
+	</select>
+	
+	<select id="totalOrderNumByUsername" resultType="Integer">
+		SELECT count(*) From orders WHERE username=#{username};
+	</select>
+	
+	<select id="queryAllOrder" resultMap="result">
+		SELECT  uuid, num, price, state, date_, scope, shape, username FROM orders;
+	</select>
+	
+	<select id="queryOrderByUUID" parameterType="String" resultMap="result">
+		SELECT  uuid, num, price, state, date_, scope, shape, username FROM orders WHERE uuid = #{uuid};
+	</select>
+	
+	<select id="getPageData" parameterType="Integer" resultMap="result">
+		SELECT uuid, num, price, state, date_, scope, shape, username FROM orders order by date_ desc limit #{pageSize} offset #{pageIndex} 
+	</select>
+	
+	<select id="getPageDataByUsername" resultMap="result">
+		SELECT uuid, num, price, state, date_, scope, shape, username FROM orders WHERE username=#{username} order by date_ desc limit #{pageSize} offset #{pageIndex}
+	</select>
+	
+	<delete id="deleteOrderByUUID">
+		DELETE FROM orders WHERE uuid = #{uuid}
+	</delete>
+	
+	<select id="queryOrderBySearchVal" parameterType="String" resultMap="result">
+		SELECT uuid, num, price, state, date_, scope, shape, username FROM orders WHERE username=#{username} and record_to_text(orders) ~ #{searchVal} order by date_ desc
+	</select>
+	
+	<sql id="pagination">
+		<if test="pageSize != null and startIndex != null">
+			<![CDATA[
+				limit #{pageSize} offset #{startIndex}
+			]]>
+		</if>
+	</sql>
+	
+	<select id="queryOrderBySearchOrder" resultMap="result">
+		SELECT uuid, num, price, state, date_, scope, shape, username FROM (SELECT orders.uuid as uuid,orders.num as num,
+		orders.price as price, orders.state as state, orders.date_ as date_, orders.scope as scope, orders.shape as shape, orders.username as username ,
+			products.state as pstate FROM orders inner join products on orders.uuid = products.order_uuid) as orderproducts where 1=1
+			<if test='orderNum != null and !"".equals(orderNum)'>
+			    and orderproducts.uuid = #{orderNum}
+			</if>
+			<if test='username != null and !"".equals(username)'>
+				and orderproducts.username = #{username}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				<![CDATA[
+					and orderproducts.date_ >= #{startDate}
+				]]>
+			</if>
+			<if test="endDate != null and endDate != ''">
+				<![CDATA[
+					and orderproducts.date_ <= #{endDate}
+				]]>
+			</if>
+			<if test="state != null and state != ''">
+				and orderproducts.pstate = #{state}
+			</if>
+			<![CDATA[
+				order by date_ desc 
+			]]>
+			<include refid="pagination"></include>
+			
+	</select>
+	
+	<select id="queryTotalOrderBySearchOrder" resultType="Integer">
+		SELECT count(*) FROM (SELECT orders.uuid as uuid,orders.num as num,
+		orders.price as price, orders.state as state, orders.date_ as date_, orders.scope as scope, orders.shape as shape, orders.username as username ,
+			products.state as pstate FROM orders inner join products on orders.uuid = products.order_uuid) as orderproducts 
+		<where>
+			<if test='orderNum != null and !"".equals(orderNum)'>
+				and orderproducts.uuid = #{orderNum}
+			</if>
+			<if test='username != null and !"".equals(username)'>
+				and orderproducts.username = #{username}
+			</if>
+			<if test="startDate != null and startDate != ''">
+				<![CDATA[
+					and orderproducts.date_ >= #{startDate}
+				]]>
+			</if>
+			<if test="endDate != null and endDate != ''">
+				<![CDATA[
+					and orderproducts.date_ <= #{endDate}
+				]]>
+			</if>
+			<if test="state != null and state != ''">
+				and orderproducts.pstate = #{state}
+			</if>
+		</where>
+	</select>
+</mapper>

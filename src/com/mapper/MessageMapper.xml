@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.MessageMapper">
+	
+	<resultMap type="message" id="result">
+		<result property="id" column="id"/>
+		<result property="username" column="username"/>
+		<result property="account_num" column="account_num"/>
+		<result property="account_pwd" column="account_pwd"/>
+		<result property="product_id" column="product_id"/>
+	</resultMap>
+	
+	<insert id="addMessage" parameterType="message" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		INSERT INTO messages(username, account_num, account_pwd, product_id) VALUES(#{username}, #{account_num}, #{account_pwd}, #{product_id});
+	</insert>
+	
+	<select id="queryMessageByUsername" parameterType="String" resultMap="result">
+		SELECT id ,username, account_num, account_pwd, product_id FROM messages WHERE username = #{username}
+	</select>
+	
+	<select id="queryMessageByProudctId" parameterType="Integer" resultMap="result">
+		SELECT id ,username, account_num, account_pwd, product_id FROM messages WHERE product_id = #{productId}
+	</select>
+	
+</mapper>

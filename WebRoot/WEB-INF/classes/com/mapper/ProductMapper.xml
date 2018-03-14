@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.ProductMapper">
+	
+	<resultMap type="product" id="result">
+		<result property="id" column="id"/>
+		<result property="year" column="year"/>
+		<result property="area" column="area"/>
+		<result property="index" column="index"/>
+		<result property="inputForm" column="inputform"/>
+		<result property="order_uuid" column="order_uuid"/>
+		<result property="state" column="state"/>
+	</resultMap>
+	
+	<insert id="addProduct" parameterType="product" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		INSERT INTO products(year, area, index, inputform, order_uuid, state) VALUES(#{year}, #{area}, #{index}, #{inputForm}, #{order_uuid} ,#{state});
+	</insert>
+	
+	<select id="queryProductByOrderUUID" parameterType="String" resultMap="result">
+		SELECT id ,year, area, index, inputform, order_uuid ,state FROM products WHERE order_uuid = #{order_uuid}
+	</select>
+	
+	<select id="queryProductById" parameterType="Integer" resultMap="result">
+		SELECT id ,year, area, index, inputform, order_uuid, state FROM products WHERE id = #{id}
+	</select>
+	
+	<update id="updateProductById" parameterType="product"> 
+		UPDATE products SET year=#{year}, area=#{area}, index=#{index}, inputform=#{inputForm}, order_uuid=#{order_uuid}, state=#{state} where id = #{id}
+	</update>
+	
+	<delete id="deleteProductById" parameterType="Integer">
+		DELETE FROM products WHERE id = #{productId}		
+	</delete>
+	
+	<select id="queryProductBySearchVal" parameterType="String" resultMap="result">
+		SELECT id ,year, area, index, inputform, order_uuid, state FROM products where record_to_text(products) ~ #{SearchVal}
+	</select>
+</mapper>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.UserMapper">
+	<resultMap type="user" id="result">
+		<result property="id" column="id"/>
+		<result property="username" column="usr_name"/>
+		<result property="password" column="pwd"/>
+		<result property="email" column="email"/>
+		<result property="telephone" column="telephone"/>
+		<result property="company" column="company"/>
+		<result property="job" column="job"/>
+	</resultMap>
+
+	<select id="queryUserByUsername" parameterType="String" resultMap="result">
+		SELECT id, usr_name, pwd, email, telephone, company, job FROM users WHERE usr_name = #{username}; 
+	</select>
+	
+	<select id="queryUserByTelephone" parameterType="String" resultMap="result">
+		SELECT id, usr_name, pwd, email, telephone, company, job FROM users WHERE telephone = #{telephone};
+	</select>
+	
+	<select id="queryUserByEmail" parameterType="String" resultMap="result">
+		SELECT id, usr_name, pwd, email, telephone, company, job FROM users WHERE email = #{email};
+	</select>
+	
+	<insert id="addUser" parameterType="user">
+		INSERT INTO users(usr_name, pwd, email, telephone, company, job) VALUES(#{username}, #{password}, #{email}, #{telephone}, #{company}, #{job});
+	</insert>
+	
+	<select id="queryAllUser" resultMap="result">
+		SELECT id, usr_name, pwd, email, telephone, company, job FROM users
+	</select>
+</mapper>
