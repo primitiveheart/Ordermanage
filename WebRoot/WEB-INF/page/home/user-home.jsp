@@ -284,20 +284,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				                var geometrty = e.feature.getGeometry();
 				                sum_area = calcArea(value, geometrty);
 				         		//添加提示框
-				         		$("#map-popup").show();
-				         		var mapPopupContent = $("#map-popup-content");
-				         		var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(geometrty.getFirstCoordinate(), 'EPSG:3857', 'EPSG:4326'));
-				         		var popupContent = "<p>您选择区域的形状是: "+shape+"</br>区域的面积是："+sum_area+"平方千米</p>"
-				         		mapPopupContent.html(popupContent);
-				         	 	var mapOverlay = new ol.Overlay({
-									element:document.getElementById('map-popup'),
-									autoPan: true,  
-									autoPanAnimation: {  
-									   duration: 250   //当Popup超出地图边界时，为了Popup全部可见，地图移动的速度. 单位为毫秒（ms）  
-									 }  
-								})
-								mapOverlay.setPosition(geometrty.getFirstCoordinate());
-				         		map.addOverlay(mapOverlay);
+				         		if(shape=="Circle"){
+				         			$("#map-popup").show();
+					         		var mapPopupContent = $("#map-popup-content");
+					         		var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(geometrty.getFirstCoordinate(), 'EPSG:3857', 'EPSG:4326'));
+					         		var popupContent = "<p>圆的半径：" + (e.feature.getGeometry().getRadius()/1000).toString().substring(0,4) + "(km)</p>"
+					         		mapPopupContent.html(popupContent);
+					         	 	var mapOverlay = new ol.Overlay({
+										element:document.getElementById('map-popup'),
+										autoPan: true,  
+										autoPanAnimation: {  
+										   duration: 250   //当Popup超出地图边界时，为了Popup全部可见，地图移动的速度. 单位为毫秒（ms）  
+										 }  
+									})
+									mapOverlay.setPosition(geometrty.getFirstCoordinate());
+					         		map.addOverlay(mapOverlay);
+				         		}
 				            },this);
 						}
 					});
