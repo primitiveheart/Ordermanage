@@ -1,18 +1,27 @@
 package com.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.entity.ProductType;
 import com.entity.User;
 
 public interface IndexMapper {
+	
+	
+	/**
+	 * @return 得到用户参数(数据类型对应的面积)
+	 */
+	List<Map<String, String>> getUserParameters();
+	
 	/**
 	 * 得到所有的数据选项
 	 * @return
 	 */
-	String getIndex();
+	List<ProductType> getIndex();
 	
 	String getSecretKey(@Param("userId")Integer userId, @Param("type")Integer type);
 	

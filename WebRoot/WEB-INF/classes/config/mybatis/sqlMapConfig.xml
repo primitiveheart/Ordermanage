@@ -9,5 +9,6 @@
 		<typeAlias type="com.entity.Product" alias="product"/>
 		<typeAlias type="com.entity.Order" alias="order"/>
 		<typeAlias type="com.entity.Message" alias="message"/>
+		<typeAlias type="com.entity.ProductType" alias="productType"/>
 	</typeAliases>
 </configuration>

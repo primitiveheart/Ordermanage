@@ -134,9 +134,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		        	<i class="dropdown icon"></i>
 		        	<div class="default text">产品类型</div>
 		        	<div class="menu">
-		        		<div class="item" data-value="data">矢量数据</div>
-		        		<div class="item" data-value="special">专题图</div>
-		        		<div class="item" data-value="sum">汇总值</div>
+		        		<div class="item" data-value="data" data-limit="${vector}">矢量数据</div>
+		        		<div class="item" data-value="special" data-limit="${themetic}">专题图</div>
+		        		<div class="item" data-value="sum" data-limit="${statistics}">汇总值</div>
 		        	</div>
 		        </div>
 		        
@@ -145,7 +145,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			        <select multiple="" class="ui search fluid dataSelection normal dropdown">
 			        	<c:if test="${requestScope.index != null}">
 				        	<c:forEach items="${requestScope.index}" var = "s" varStatus="vs">
-				        		<option type="checkbox" name="index" value="${s}">${s}</option>
+				        		<option type="checkbox" name="index" value="${s.name}">${s.chineseName}</option>
 					        </c:forEach>
 		      		    </c:if>
 			        </select>
@@ -221,6 +221,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		    var vector = new ol.layer.Vector({
 		        source:source
 		    });
+		    
 		
 	    
 	    	$("#display").hide();
@@ -299,6 +300,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									})
 									mapOverlay.setPosition(geometrty.getFirstCoordinate());
 					         		map.addOverlay(mapOverlay);
+				         		}else{
+				         			//其他形状的就隐藏
+				         			$("#map-popup").hide();
 				         		}
 				            },this);
 						}
@@ -570,11 +574,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var maxSelections = 1;
 			//数据选项
 			var indexs = [];
+			//产品类型的限制面积
+			var productLimitArea = 0;
 			
 			//产品类型
 			$(".ui.productType.dropdown").dropdown({
 				onChange:function(value, text, $choice){
 					productType = value;
+					productLimitArea = parseFloat($choice.attr("data-limit"));
+					//当请求的面积超过x时，告诉用户无法生成订单
+					if(sum_area > productLimitArea){
+						var $copysuc = $("<div class='copy-tips'><div class='copy-tips-wrap'>您选产品类型 " + value +"的面积超过 " + productLimitArea+ "请您重新选择区域大小<br><div class='ui primary button ok'>确定</div></div></div>")
+						$("body").find(".copy-tips").remove().end().append($copysuc);
+						$(".ui.button.ok").on("click", function(){
+							$(".copy-tips").fadeOut();
+						})
+					}
 					
 					//清空数据选项的下拉框
 					$(".ui.dataSelection.dropdown").dropdown("clear");
@@ -616,16 +631,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        var result_special_layer = [];
 	        //下一步
 	        $("#next").on("click",function () {
-	        	if(isEmpty(sum_area) || isEmpty(selectionYear) || isEmpty(shape) || isEmpty(productType) || isEmpty(indexs)){
-	        		var $copysuc = $("<div class='copy-tips'><div class='copy-tips-wrap'>年份，区域选择，产品类型，数据选项其中有为空的，请您选择<br><div class='ui primary button ok'>确定</div></div></div>")
+	        
+	        	//当请求的面积超过x时，告诉用户无法生成订单
+				if(sum_area > productLimitArea){
+					var $copysuc = $("<div class='copy-tips'><div class='copy-tips-wrap'>您选产品类型 " + productType +"的面积超过 " + productLimitArea+ "请您重新选择区域大小<br><div class='ui primary button ok'>确定</div></div></div>")
 					$("body").find(".copy-tips").remove().end().append($copysuc);
 					$(".ui.button.ok").on("click", function(){
 						$(".copy-tips").fadeOut();
 					})
-	        	}else{
-	        		$(".footer").hide();
-	            	display_front(sum_area, indexs, selectionYear, shapeText);
-	        	}
+				}else{
+					if(isEmpty(sum_area) || isEmpty(selectionYear) || isEmpty(shape) || isEmpty(productType) || isEmpty(indexs)){
+		        		var $copysuc = $("<div class='copy-tips'><div class='copy-tips-wrap'>年份，区域选择，产品类型，数据选项其中有为空的，请您选择<br><div class='ui primary button ok'>确定</div></div></div>")
+						$("body").find(".copy-tips").remove().end().append($copysuc);
+						$(".ui.button.ok").on("click", function(){
+							$(".copy-tips").fadeOut();
+						})
+		        	}else{
+		        		$(".footer").hide();
+		            	display_front(sum_area, indexs, selectionYear, shapeText);
+		        	}
+				
+				}
+	        	
 	        })    
 	        
 	        //上一步

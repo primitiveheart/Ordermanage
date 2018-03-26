@@ -156,13 +156,19 @@ public class AdminManageController {
 				JSONObject accountJson = JSONObject.parseObject(account);
 				
 				//第三步：把消息写到数据库中
-				Message message = new Message();
-				message.setAccount_num(accountJson.getString("acc_num"));
-				message.setAccount_pwd(accountJson.getString("pwd"));
-				message.setUsername(username);
-				message.setProduct_id(Integer.valueOf(product_id));
+				//看数据库中有没有该条消息
+				Message quertMessage = messageMapper.queryMessageByProudctId(product.getId());
+				//如果数据为空时，才插入数据
+				if(quertMessage == null){
+					Message message = new Message();
+					message.setAccount_num(accountJson.getString("acc_num"));
+					message.setAccount_pwd(accountJson.getString("pwd"));
+					message.setUsername(username);
+					message.setProduct_id(Integer.valueOf(product_id));
+					
+					messageMapper.addMessage(message);
+				}
 				
-				messageMapper.addMessage(message);
 			} catch (Exception e) {
 				logger.error("AdminManageController acquireSecretKey 产品更新数据失败或是消息插入数据库失败", e);
 			}

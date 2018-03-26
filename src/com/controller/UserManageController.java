@@ -3,6 +3,7 @@ package com.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +27,7 @@ import com.entity.Message;
 import com.entity.Order;
 import com.entity.Product;
 import com.entity.ProductSecretKey;
+import com.entity.ProductType;
 import com.entity.User;
 import com.mapper.IndexMapper;
 import com.mapper.MessageMapper;
@@ -53,24 +55,30 @@ public class UserManageController {
 	
 	@RequestMapping("userhome.html")
 	public String order(HttpServletRequest request){
-		List<String> result;
 		List<Integer> allYear;
 		try {
-			result = new ArrayList<String>();
 			//获取所有的年份
 			allYear = indexMapper.getAllYear();
 			logger.info("UserManageController order 成功获取年份");
 			
+			//获取数据类型所对应的面积大小
+			List<Map<String, String>> userParameters = indexMapper.getUserParameters();
+			for(int i = 0; i < userParameters.size(); i++){
+				String tempName = userParameters.get(i).get("name");
+				Object tempValue = userParameters.get(i).get("value");
+				request.setAttribute(tempName, tempValue.toString());
+			}
+			
 			//获取所有的指标
-			String index = indexMapper.getIndex();
+			List<ProductType> index = indexMapper.getIndex();
 			logger.info("UserManageController order 获取数据产品成功");
 			
-			if(index != null && StringUtils.isNotEmpty(index)){
-				JSONObject jsonObject1 = JSONObject.parseObject(index);
-				String temp = jsonObject1.getString("result");
-				JSONObject eng_name = JSONObject.parseObject(temp);
-				result = JSONArray.parseArray(eng_name.getString("eng_name")).toJavaList(String.class);
-			}
+//			if(index != null && index.size() > 0){
+//				JSONObject jsonObject1 = JSONObject.parseObject(index);
+//				String temp = jsonObject1.getString("result");
+//				JSONObject eng_name = JSONObject.parseObject(temp);
+//				result = JSONArray.parseArray(eng_name.getString("eng_name")).toJavaList(String.class);
+//			}
 			
 			List<String> provinces = new ArrayList<String>();
 			
@@ -88,8 +96,9 @@ public class UserManageController {
 	    	}
 	    	
 	    	request.setAttribute("provinces", provinces);
-			request.setAttribute("index", result);
+			request.setAttribute("index", index);
 	    	request.setAttribute("allyear", allYear);
+	    	request.setAttribute("userParameters", userParameters);
 		} catch (Exception e) {
 			logger.error("UserManageController order 获取年份或获取指标失败", e);
 		}

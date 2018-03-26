@@ -6,10 +6,30 @@
 		SELECT attnum FROM pg_attribute limit 1
 	</select>
 	-->
+	
+	<resultMap type="productType" id="result">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="chineseName" column="chn_name"/>
+		<result property="type" column="type_"/>
+		<result property="description" column="desr"/>
+		<result property="unit" column="unit"/>
+		<result property="calcType" column="calc_type"/>	
+	</resultMap>
+	<!-- 
 	<select id="getIndex" resultType="String">
 		SELECT getFldNames('{"schema":"public","tableName":"census_2010","neglectFlds":"id,perimeter,area"}'::json,'f692f114-73aa-11e7-931f-00163e104758','zh')
 	</select>
+	 -->
+	 
+	<select id="getIndex" resultMap="result">
+		select id, name, chn_name, type_, desr, unit , calc_type from product_type 
+	</select>
 	
+	
+	<select id="getUserParameters" resultType="java.util.HashMap">
+		select p_name as name, p_value as value from user_parameters
+	</select>
 	
 	<select id="getSecretKey" resultType="String">
 		SELECT createorder(#{userId}, #{type});
