@@ -178,7 +178,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		
 		<!-- 地图弹出框 -->
 		<div id="map-popup" class="map-popup">
-			<a href="#" id="map-popup-closer" class="map-popup-closer"></a>
+			<span id="map-popup-closer" class="map-popup-closer"></span>
 			<div id="map-popup-content" style="width:200px;height:60px"></div>
 		</div>
 		
@@ -214,6 +214,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    	$(".searchItem").hide();
 	    	//隐藏地图弹出框
 	    	$("#map-popup").hide();
+	    	$("#map-popup-closer").on("click", function(){
+				$("#map-popup").hide();
+			})
 	    	
 	    	var map = getMap();
 	    
