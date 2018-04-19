@@ -392,15 +392,14 @@ public class OrderManageController {
 		VIEWPARAMS = order.getScope() + ";fld:'"+ middle + "';year_:" + product.getYear() + ";usr_name:" + "'" + account_num +"';pwd:'" + account_pwd + "'";
 		String inputForm = product.getInputForm();
 		
-		String env = getSLDAppendix(account_num, account_pwd, fld, year, order);
-		env = env.split("=")[1];
+		
 	
 		
 		session.setAttribute("shape", order.getShape());
 		session.setAttribute("scope", order.getScope());
 		session.setAttribute("VIEWPARAMS", VIEWPARAMS);
 		session.setAttribute("pageNum", pageNum);
-		session.setAttribute("env", env);
+		
 		//session.setAttribute("productId", productId);
 		
 		
@@ -408,6 +407,9 @@ public class OrderManageController {
     	if(inputForm.equals("data")){
     		return "redirect:../result/vector.html";
     	}else if(inputForm.equals("special")){
+    		String env = getSLDAppendix(account_num, account_pwd, fld, year, order);
+    		env = env.split("=")[1];
+    		session.setAttribute("env", env);
     		return "redirect:../result/special.html";
     	}else{
     		return "redirect:../result/sum.html";
