@@ -57,21 +57,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   		<input type="hidden" data-env="${env}" id="env"> 
 		<div class="ui large longer modal">
 			<div class="header">
-				专题图 <div class="ui button copy">复制链接</div> <a class="sum" href="">汇总值链接</a>
+				专题图 <div class="ui button copy">复制链接</div> <a class="sum" href="">汇总值链接</a> <a href="home/productPicture.html?range=${env}">图例链接</a>
 			</div>
 			
 			<div class="scrolling content">
 				<div class="ui header">专题图</div>
 				<div class="ui image" id="image">
 				</div>
+				<!-- 
 				<div class="ui header">图例</div>
 				<div class="ui image">
 					<img alt="" src="home/productPicture.html?range=${env}">
 				</div>
+				 
 				<div class="ui header">汇总值</div>
 				<div class="description" id="description">
 					<p class="sumDescription"></p>
 				</div>
+				-->
 			</div>
 			<div class="actions">
 				<div class="ui positive right labeled icon button">返回</div>
@@ -97,7 +100,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
        				
        				$(location).attr("href","home/myOrder.html?pageNum="+pageNum);
        			}
-       		}).modal('show');
+       		}).modal('setting', 'closable', false)
+       		.modal('show');
        			
 	    	var shape = $("#shape").attr("data-shape");
 	    	var viewParams_vector = $("#viewParam").attr("data-viewparams");	
@@ -125,7 +129,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			sumHrefViewParams = sumHrefViewParams.replace(/\\,/g,"@");
 			sumHref += "&VIEWPARAMS=" + sumHrefViewParams;
 			$(".sum").attr("href",sumHref);
-			
+			/*
 			$.ajax({  
 		      url: "http://" + ipAddress + ":8080/map/census_china/ows?service=WFS&version=1.0.0&request=GetFeature&typeName="+layers+"&maxFeatures=50&outputFormat=gml3",  
 		      type: 'post', 
@@ -140,7 +144,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		        alert("执行失败");    
 		      }  
   			});  
-  			
+  			*/
   		
 			
 			//专题图
@@ -196,7 +200,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							}),
 						})
 						
-						completeLink = "http://"+ipAddress+":8080/map/census_china/wms?service=wms&REQUEST=GetMap&width=768&height=460&srs=EPSG:4326&LAYERS="+layers+"&VERSION=1.1.1&TRANSPARENCY=true&VIEWPARAMS="+viewParams_vector+"&TILED=true&format=image/png&bbox=" + extent + "&env=" + env;
+						completeLink = "http://"+ipAddress+":8080/map/census_china/wms?service=wms&REQUEST=GetMap&width=768&height=768&srs=EPSG:4326&LAYERS="+layers+"&VERSION=1.1.1&TRANSPARENCY=true&VIEWPARAMS="+viewParams_vector+"&TILED=true&format=image/png&bbox=" + extent + "&env=" + env;
 						$(".copy").val(completeLink);
 					}
 				});
@@ -237,7 +241,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if(shape == "Circle"){
 					extent = [71.0,16.0,136.0,55.0]
 				}*/
-				completeLink = "http://" +ipAddress +":8080/map/census_china/wms?service=wms&REQUEST=GetMap&width=768&height=460&srs=EPSG:4326&LAYERS="+layers+"&VERSION=1.1.1&TRANSPARENCY=true&VIEWPARAMS="+viewParams_vector+"&TILED=true&format=image/png&bbox=" + extent + "&env=" + env;;
+				completeLink = "http://" +ipAddress +":8080/map/census_china/wms?service=wms&REQUEST=GetMap&width=768&height=768&srs=EPSG:4326&LAYERS="+layers+"&VERSION=1.1.1&TRANSPARENCY=true&VIEWPARAMS="+viewParams_vector+"&TILED=true&format=image/png&bbox=" + extent + "&env=" + env;;
 				$(".copy").val(completeLink);
 	    	}
 	    	

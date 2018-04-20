@@ -48,26 +48,26 @@ function getSelectShapeExtent(scope, shape){
 		var temp = scope.split(";");
 		var centerX = temp[0].split(":")[1];
 		var centerY = temp[1].split(":")[1];
-		var radius = temp[2].split(":")[1] * 1000;
+		//var radius = temp[2].split(":")[1] * 1000
+		var radius = temp[2].split(":")[1] /100;
 		var centerLL = ol.proj.transform([parseFloat(centerX),parseFloat(centerY)], 'EPSG:4326', 'EPSG:3857');
 		
 		/*
-		var wgs84Sphere= new ol.Sphere(6378137);
 		
-		var centerLL = ol.proj.transform([parseFloat(centerX),parseFloat(centerY)], 'EPSG:4326', 'EPSG:3857');
-		var edgeCoor = [centerLL[0] + radius, centerLL[1]];
-		var groudRadius = wgs84Sphere.haversineDistance(
-					ol.proj.transform(centerLL, 'EPSG:3857', 'EPSG:4326'),
-					ol.proj.transform(edgeCoor, 'EPSG:3857', 'EPSG:4326')
-				);
-		*/
+	
 		var tempCircle = new ol.geom.Circle(centerLL, radius);
 		extent = tempCircle.getExtent();
 		var min_x = ol.proj.transform([extent[0], extent[1]], 'EPSG:3857','EPSG:4326')[0];
 		var min_y = Math.abs(ol.proj.transform([extent[0], extent[1]], 'EPSG:3857','EPSG:4326')[1]);
 		var max_x = ol.proj.transform([extent[2], extent[3]], 'EPSG:3857','EPSG:4326')[0];
 		var max_y = Math.abs(ol.proj.transform([extent[2], extent[3]], 'EPSG:3857','EPSG:4326')[1]);
+		*/
+		var min_x = (parseFloat(centerX) - parseFloat(radius));
+		var min_y = (parseFloat(centerY) - parseFloat(radius));
+		var max_x = (parseFloat(centerX) + parseFloat(radius));
+		var max_y = (parseFloat(centerY) + parseFloat(radius)) ;
 		extent = [parseFloat(min_x), parseFloat(min_y), parseFloat(max_x), parseFloat(max_y)];
+		
 		//extent = [parseFloat(centerX)-5, parseFloat(centerY)-5, parseFloat(centerX) + 5, parseFloat(centerY) + 5];
 	}
 	return extent;
